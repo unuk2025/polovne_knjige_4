@@ -1,19 +1,101 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "mysql"
-//url      = env("DATABASE_URL")
 }
 
-model Imenik {
-  id      Int    @id @default(autoincrement())
-  ime     String
-  telefon String
+model autor {
+  autor_id       Int      @id @default(autoincrement())
+  ime_autora     String   @db.VarChar(50)
+  prezime_autora String?  @db.VarChar(50)
+  zemlja_autora  String?  @db.VarChar(50)
+  knjiga         knjiga[]
+}
+
+model dodata {
+  isbn        String     @db.VarChar(13)
+  broj_racuna Int
+  kolicina    Int        @default(1)
+  knjiga      knjiga     @relation(fields: [isbn], references: [isbn], onDelete: NoAction, onUpdate: NoAction, map: "dodata_ibfk_1")
+  porudzbina  porudzbina @relation(fields: [broj_racuna], references: [broj_racuna], onDelete: Cascade, onUpdate: NoAction, map: "dodata_ibfk_2")
+
+  @@id([isbn, broj_racuna])
+  @@index([broj_racuna], map: "broj_racuna")
+}
+
+model izdavac {
+  izdavac_id     Int      @id @default(autoincrement())
+  naziv_izdavaca String   @db.VarChar(100)
+  grad           String?  @db.VarChar(50)
+  knjiga         knjiga[]
+}
+
+model knjiga {
+  isbn                       String         @id @db.VarChar(13)
+  naslov                     String         @db.VarChar(255)
+  naslov_originala           String?        @db.VarChar(255)
+  godina_izdavanja_originala Int?
+  godina_izdavanja           Int?
+  cena                       Decimal        @db.Decimal(10, 2)
+  povez                      String?        @db.VarChar(20)
+  pismo                      String?        @db.VarChar(20)
+  slika_korice               String?        @db.VarChar(255)
+  broj_strana                Int?
+  opis                       String?        @db.Text
+  autor_id                   Int
+  zanr_id                    Int
+  izdavac_id                 Int
+  dodata                     dodata[]
+  autor                      autor          @relation(fields: [autor_id], references: [autor_id], onDelete: NoAction, onUpdate: NoAction, map: "knjiga_ibfk_1")
+  zanr                       zanr           @relation(fields: [zanr_id], references: [zanr_id], onDelete: NoAction, onUpdate: NoAction, map: "knjiga_ibfk_2")
+  izdavac                    izdavac        @relation(fields: [izdavac_id], references: [izdavac_id], onDelete: NoAction, onUpdate: NoAction, map: "knjiga_ibfk_3")
+  slika_uzorak               slika_uzorak[]
+
+  @@index([autor_id], map: "autor_id")
+  @@index([izdavac_id], map: "izdavac_id")
+  @@index([zanr_id], map: "zanr_id")
+}
+
+model korisnik {
+  korisnik_id    Int             @id @default(autoincrement())
+  korisnicko_ime String          @unique(map: "korisnicko_ime") @db.VarChar(50)
+  email          String          @unique(map: "email") @db.VarChar(100)
+  lozinka        String          @db.VarChar(255)
+  uloga          korisnik_uloga? @default(kupac)
+  porudzbina     porudzbina[]
+}
+
+model porudzbina {
+  broj_racuna Int      @id @default(autoincrement())
+  datum       DateTime @default(now()) @db.DateTime(0)
+  iznos       Decimal  @default(0.00) @db.Decimal(10, 2)
+  korisnik_id Int
+  dodata      dodata[]
+  korisnik    korisnik @relation(fields: [korisnik_id], references: [korisnik_id], onDelete: NoAction, onUpdate: NoAction, map: "porudzbina_ibfk_1")
+
+  @@index([korisnik_id], map: "korisnik_id")
+}
+
+model slika_uzorak {
+  slika_id    Int     @id @default(autoincrement())
+  naziv_slike String? @db.VarChar(100)
+  link_slike  String  @db.VarChar(255)
+  isbn        String  @db.VarChar(13)
+  knjiga      knjiga  @relation(fields: [isbn], references: [isbn], onDelete: Cascade, onUpdate: NoAction, map: "slika_uzorak_ibfk_1")
+
+  @@index([isbn], map: "isbn")
+}
+
+model zanr {
+  zanr_id     Int      @id @default(autoincrement())
+  naziv_zanra String   @unique(map: "naziv_zanra") @db.VarChar(50)
+  knjiga      knjiga[]
+}
+
+enum korisnik_uloga {
+  kupac
+  prodavac
+  administrator
 }
