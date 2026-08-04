@@ -1,3 +1,6 @@
+Ovo je studentski projekat iz predmeta Informacione tehnologije na Elektronskom fakultetu u Nišu. Naziv projekta glasi "Stare knjige", a predviđeno je da se aplikacija realizuje preko Next.JS framework-a, u TypeScript-u i da koristi MySQL bazu podataka
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
