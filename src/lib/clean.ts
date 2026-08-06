@@ -1,14 +1,7 @@
 // src/lib/clean.ts
 
-import { PrismaClient } from "../generisano/prisma/client";
-import { PrismaMariaDb } from "@prisma/adapter-mariadb";
+import prisma from "@/lib/prisma";
 import type { ActionResult } from "@/lib/types";
-
-const adapter = new PrismaMariaDb(process.env.DATABASE_URL!);
-
-const prisma = new PrismaClient({
-    adapter,
-});
 
 export async function runClean(): Promise<ActionResult> {
     try {
@@ -56,6 +49,6 @@ export async function runClean(): Promise<ActionResult> {
                     : "Došlo je do greške.",
         };
     } finally {
-        await prisma.$disconnect();
+
     }
 }

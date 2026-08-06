@@ -1,18 +1,12 @@
 // src/lib/seed.ts
 
-import { PrismaClient } from "../generisano/prisma/client";
+import prisma from "@/lib/prisma";
 import { korisnik_uloga } from "../generisano/prisma/enums";
-import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import { mkdir, access, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { constants } from "node:fs";
 import type { ActionResult } from "@/lib/types";
 
-const adapter = new PrismaMariaDb(process.env.DATABASE_URL!);
-
-const prisma = new PrismaClient({
-    adapter,
-});
 
 const PUBLIC_DIR = path.join(process.cwd(), "public");
 const SLIKE_DIR = path.join(PUBLIC_DIR, "slike");
@@ -94,34 +88,34 @@ export async function runSeed(): Promise<ActionResult> {
         //----------------------------------------------------------
 
         const zanrovi = await Promise.all([
-            prisma.zanr.upsert({
-                where: { naziv_zanra: "Roman" },
-                update: {},
-                create: { naziv_zanra: "Roman" }
+            prisma.zanr.create({
+                data: {
+                    naziv_zanra: "Roman"
+                }
             }),
 
-            prisma.zanr.upsert({
-                where: { naziv_zanra: "Fantastika" },
-                update: {},
-                create: { naziv_zanra: "Fantastika" }
+            prisma.zanr.create({
+                data: {
+                    naziv_zanra: "Fantastika"
+                }
             }),
 
-            prisma.zanr.upsert({
-                where: { naziv_zanra: "Drama" },
-                update: {},
-                create: { naziv_zanra: "Drama" }
+            prisma.zanr.create({
+                data: {
+                    naziv_zanra: "Drama"
+                }
             }),
 
-            prisma.zanr.upsert({
-                where: { naziv_zanra: "Istorija" },
-                update: {},
-                create: { naziv_zanra: "Istorija" }
+            prisma.zanr.create({
+                data: {
+                    naziv_zanra: "Istorija"
+                }
             }),
 
-            prisma.zanr.upsert({
-                where: { naziv_zanra: "Psihologija" },
-                update: {},
-                create: { naziv_zanra: "Psihologija" }
+            prisma.zanr.create({
+                data: {
+                    naziv_zanra: "Psihologija"
+                }
             })
         ]);
 
@@ -227,8 +221,7 @@ export async function runSeed(): Promise<ActionResult> {
                     lozinka: "mika123",
                     uloga: korisnik_uloga.kupac
                 }
-            ],
-            skipDuplicates: true
+            ]
         });
 
 
@@ -342,8 +335,6 @@ export async function runSeed(): Promise<ActionResult> {
             message: "Seed uspešno završen."
         };
 
-
-
     } catch (error) {
         return {
             success: false,
@@ -353,14 +344,9 @@ export async function runSeed(): Promise<ActionResult> {
                     : "Došlo je do greške."
         };
     }
-    
-    
-    
-    
-    
-    
+   
     finally {
-        await prisma.$disconnect();
+
     }
 }
 
