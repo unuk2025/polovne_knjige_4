@@ -6,6 +6,7 @@ import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import { mkdir, access, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { constants } from "node:fs";
+import type { ActionResult } from "@/lib/types";
 
 const adapter = new PrismaMariaDb(process.env.DATABASE_URL!);
 
@@ -35,10 +36,49 @@ async function createPlaceholderImage(filePath: string) {
     }
 }
 
+async function ensureDatabaseIsEmpty() {
 
-export async function runSeed() {
+    const [
+        brojAutora,
+        brojIzdavaca,
+        brojZanrova,
+        brojKorisnika,
+        brojKnjiga,
+        brojPorudzbina,
+        brojDodatih,
+        brojSlika
+    ] = await Promise.all([
+        prisma.autor.count(),
+        prisma.izdavac.count(),
+        prisma.zanr.count(),
+        prisma.korisnik.count(),
+        prisma.knjiga.count(),
+        prisma.porudzbina.count(),
+        prisma.dodata.count(),
+        prisma.slika_uzorak.count()
+    ]);
+
+    if (
+        brojAutora > 0 ||
+        brojIzdavaca > 0 ||
+        brojZanrova > 0 ||
+        brojKorisnika > 0 ||
+        brojKnjiga > 0 ||
+        brojPorudzbina > 0 ||
+        brojDodatih > 0 ||
+        brojSlika > 0
+    ) {
+        throw new Error(
+            "Baza nije prazna. Inicijalizacija je prekinuta."
+        );
+    }
+}
+
+export async function runSeed(): Promise<ActionResult> {
 
     try {
+
+        await ensureDatabaseIsEmpty();
 
         //----------------------------------------------------------
         // Kreiranje direktorijuma
@@ -295,12 +335,32 @@ export async function runSeed() {
             }
         }
 
-
         console.log("Seed uspešno završen.");
 
-    } finally {
+        return {
+            success: true,
+            message: "Seed uspešno završen."
+        };
 
 
+
+    } catch (error) {
+        return {
+            success: false,
+            message:
+                error instanceof Error
+                    ? error.message
+                    : "Došlo je do greške."
+        };
+    }
+    
+    
+    
+    
+    
+    
+    finally {
+        await prisma.$disconnect();
     }
 }
 
