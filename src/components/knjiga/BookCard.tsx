@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
+import { getCoverImage } from "@/lib/cover";
 
 type BookCardProps = {
     isbn: string;
@@ -7,16 +9,19 @@ type BookCardProps = {
     zanr: string;
     izdavac: string;
     cena: number;
+    slikaKorice: string | null;
 };
 
-export default function BookCard({
+export default async function BookCard({
     isbn,
     naslov,
     autor,
     zanr,
     izdavac,
     cena,
+    slikaKorice,
 }: BookCardProps) {
+    const coverImage = await getCoverImage(slikaKorice);
     return (
         <Link
             href={`/knjiga/${isbn}`}
@@ -25,8 +30,14 @@ export default function BookCard({
             <article className="flex gap-6 rounded-lg border border-gray-300 bg-white p-4 shadow-sm">
 
                 {/* Placeholder za koricu */}
-                <div className="flex h-40 w-28 shrink-0 items-center justify-center rounded border border-dashed border-gray-400 bg-gray-100 text-center text-sm text-gray-500">
-                    Korica
+                <div className="relative h-40 w-28 shrink-0 overflow-hidden rounded border">
+                    <Image
+                        src={coverImage}
+                        alt={`Korica knjige: ${naslov}`}
+                        fill
+                        sizes="112px"
+                        className="object-cover"
+                    />
                 </div>
 
                 {/* Osnovni podaci */}

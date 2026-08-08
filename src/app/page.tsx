@@ -39,6 +39,7 @@ export default async function HomePage() {
                             zanr={knjiga.zanr.naziv_zanra}
                             izdavac={knjiga.izdavac.naziv_izdavaca}
                             cena={Number(knjiga.cena)}
+                            slikaKorice={knjiga.slika_korice}
                         />
 
                     ))}
