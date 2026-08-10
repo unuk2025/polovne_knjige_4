@@ -1,15 +1,9 @@
-type HeaderProps = {
-    status: string;
-};
+import { currentUser } from "@/lib/user";
 
-export default function Header({
-    status,
-}: HeaderProps) {
+export default function Header() {
     return (
         <header className="mb-10 flex items-center justify-between rounded-lg border border-gray-300 bg-slate-100 p-5">
-
             <div>
-
                 <h1 className="text-3xl font-bold">
                     Polovne knjige
                 </h1>
@@ -17,21 +11,23 @@ export default function Header({
                 <p className="text-sm text-gray-600">
                     Studentski projekat
                 </p>
-
             </div>
 
             <div className="text-right">
-
                 <p className="text-sm text-gray-600">
                     Status korisnika
                 </p>
 
                 <p className="text-lg font-semibold">
-                    {status}
+                    {currentUser.status}
                 </p>
 
+                {currentUser.korisnickoIme && (
+                    <p className="text-sm text-gray-600">
+                        {currentUser.korisnickoIme}
+                    </p>
+                )}
             </div>
-
         </header>
     );
 }

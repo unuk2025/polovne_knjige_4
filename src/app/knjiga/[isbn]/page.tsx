@@ -1,7 +1,10 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { stat } from "node:fs/promises";
+import path from "node:path";
 
 import prisma from "@/lib/prisma";
+import { getCoverImage } from "@/lib/cover";
 
 type PageProps = {
     params: Promise<{
@@ -35,6 +38,31 @@ export default async function BookPage({
         notFound();
     }
 
+    const coverImage = await getCoverImage(knjiga.slika_korice);
+
+    const validniUzorci = [];
+
+    for (const slika of knjiga.slika_uzorak) {
+        try {
+            const filePath = path.join(
+                process.cwd(),
+                "public",
+                slika.link_slike.replace(/^\/+/, "")
+            );
+
+            const fileInfo = await stat(filePath);
+
+            if (fileInfo.size > 0) {
+                validniUzorci.push(slika);
+            }
+        } catch {
+            // Fajl ne postoji – preskačemo ga.
+        }
+    }
+
+
+
+
     return (
         <main className="mx-auto max-w-6xl p-8">
 
@@ -47,7 +75,7 @@ export default async function BookPage({
                 <div>
 
                     <Image
-                        src={knjiga.slika_korice ?? "/slike/knjige/placeholder.jpg"}
+                        src={coverImage}
                         alt={knjiga.naslov}
                         width={300}
                         height={450}
@@ -77,9 +105,7 @@ export default async function BookPage({
             </h2>
 
             <div className="flex flex-wrap gap-4">
-
-                {knjiga.slika_uzorak.map((slika) => (
-
+                {validniUzorci.map((slika) => (
                     <Image
                         key={slika.slika_id}
                         src={slika.link_slike}
@@ -88,9 +114,7 @@ export default async function BookPage({
                         height={200}
                         className="rounded border"
                     />
-
                 ))}
-
             </div>
 
         </main>

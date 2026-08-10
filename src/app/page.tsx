@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import BookCard from "@/components/knjiga/BookCard";
 import Header from "@/components/layout/Header";
+import Navbar from "@/components/layout/Navbar";
 
 export default async function HomePage() {
 
@@ -19,7 +20,9 @@ export default async function HomePage() {
     return (
         <main className="mx-auto max-w-6xl p-8">
 
-            <Header status="Gost" />
+            <Header />
+            
+            <Navbar />
 
             <section>
 
