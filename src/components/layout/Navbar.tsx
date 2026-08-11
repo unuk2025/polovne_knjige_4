@@ -2,7 +2,9 @@ import Link from "next/link";
 
 import { currentUser } from "@/lib/user";
 
-export default function Navbar() {
+export default async function Navbar() {
+    const user = await currentUser();
+
     return (
         <nav className="mb-8 flex gap-4 rounded-lg border border-gray-300 bg-slate-100 p-4">
             <Link
@@ -19,7 +21,7 @@ export default function Navbar() {
                 Katalog
             </Link>
 
-            {currentUser.status === "kupac" && (
+            {user.status === "kupac" && (
                 <Link
                     href="/korpa"
                     className="font-medium hover:underline"
@@ -28,7 +30,7 @@ export default function Navbar() {
                 </Link>
             )}
 
-            {currentUser.status === "administrator" && (
+            {user.status === "administrator" && (
                 <Link
                     href="/baza"
                     className="font-medium hover:underline"

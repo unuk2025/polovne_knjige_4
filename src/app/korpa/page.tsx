@@ -2,8 +2,10 @@ import { redirect } from "next/navigation";
 
 import { currentUser } from "@/lib/user";
 
-export default function KorpaPage() {
-    if (currentUser.status !== "kupac") {
+export default async function KorpaPage() {
+    const user = await currentUser();
+
+    if (user.status !== "kupac") {
         redirect("/");
     }
 

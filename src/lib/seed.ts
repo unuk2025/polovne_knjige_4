@@ -6,6 +6,7 @@ import { mkdir, access, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { constants } from "node:fs";
 import type { ActionResult } from "@/lib/types";
+import { hashPassword } from "@/lib/password";
 
 
 const PUBLIC_DIR = path.join(process.cwd(), "public");
@@ -199,32 +200,20 @@ export async function runSeed(): Promise<ActionResult> {
         // Korisnici
         //----------------------------------------------------------
 
+        const adminLozinka = await hashPassword("admin123");
+
         await prisma.korisnik.createMany({
             data: [
                 {
                     korisnicko_ime: "admin",
                     email: "admin@test.rs",
-                    lozinka: "admin123",
+                    lozinka: adminLozinka,
                     uloga: korisnik_uloga.administrator
-                },
-
-                {
-                    korisnicko_ime: "pera",
-                    email: "pera@test.rs",
-                    lozinka: "pera123",
-                    uloga: korisnik_uloga.prodavac
-                },
-
-                {
-                    korisnicko_ime: "mika",
-                    email: "mika@test.rs",
-                    lozinka: "mika123",
-                    uloga: korisnik_uloga.kupac
                 }
             ]
         });
 
-
+        
         //----------------------------------------------------------
         // Knjige
         //----------------------------------------------------------

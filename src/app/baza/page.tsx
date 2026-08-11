@@ -1,9 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useState } from "react";
-import { redirect } from "next/navigation";
 
-import { currentUser } from "@/lib/user";
 import { initializeCatalog } from "../admin/seed/actions";
 import { cleanDatabase } from "../admin/clean/actions";
 import type { ActionResult } from "@/lib/types";
@@ -48,9 +46,7 @@ export default function BazaPage() {
         }
     }, [cleanState]);
 
-    if (currentUser.status !== "administrator") {
-        redirect("/");
-    }
+
     
     return (
         <main className="mx-auto max-w-6xl p-8">

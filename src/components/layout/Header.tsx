@@ -1,6 +1,8 @@
 import { currentUser } from "@/lib/user";
 
-export default function Header() {
+export default async function Header() {
+    const user = await currentUser();
+
     return (
         <header className="mb-10 flex items-center justify-between rounded-lg border border-gray-300 bg-slate-100 p-5">
             <div>
@@ -19,12 +21,12 @@ export default function Header() {
                 </p>
 
                 <p className="text-lg font-semibold">
-                    {currentUser.status}
+                    {user.status}
                 </p>
 
-                {currentUser.korisnickoIme && (
+                {user.korisnickoIme && (
                     <p className="text-sm text-gray-600">
-                        {currentUser.korisnickoIme}
+                        {user.korisnickoIme}
                     </p>
                 )}
             </div>

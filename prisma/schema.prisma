@@ -66,6 +66,17 @@ model korisnik {
   lozinka        String          @db.VarChar(255)
   uloga          korisnik_uloga? @default(kupac)
   porudzbina     porudzbina[]
+  sesija         sesija[]
+}
+
+model sesija {
+  sesija_id  Int      @id @default(autoincrement())
+  token      String   @unique @db.VarChar(255)
+  korisnik_id Int
+  istice     DateTime @db.DateTime(0)
+  korisnik   korisnik @relation(fields: [korisnik_id], references: [korisnik_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([korisnik_id])
 }
 
 model porudzbina {
