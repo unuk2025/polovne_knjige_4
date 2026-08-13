@@ -1,5 +1,4 @@
 // src/lib/seed.ts
-
 import prisma from "@/lib/prisma";
 import { korisnik_uloga } from "../generisano/prisma/enums";
 import { mkdir, access, writeFile } from "node:fs/promises";
@@ -202,17 +201,14 @@ export async function runSeed(): Promise<ActionResult> {
 
         const adminLozinka = await hashPassword("admin123");
 
-        await prisma.korisnik.createMany({
-            data: [
-                {
-                    korisnicko_ime: "admin",
-                    email: "admin@test.rs",
-                    lozinka: adminLozinka,
-                    uloga: korisnik_uloga.administrator
-                }
-            ]
+        await prisma.korisnik.create({
+            data: {
+                korisnicko_ime: "admin",
+                email: "admin@test.rs",
+                lozinka: adminLozinka,
+                uloga: korisnik_uloga.administrator
+            }
         });
-
         
         //----------------------------------------------------------
         // Knjige

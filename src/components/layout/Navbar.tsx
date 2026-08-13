@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { currentUser } from "@/lib/user";
+import { odjaviKorisnika } from "@/app/odjava/actions";
 
 export default async function Navbar() {
     const user = await currentUser();
@@ -37,6 +38,17 @@ export default async function Navbar() {
                 >
                     Baza
                 </Link>
+            )}
+
+            {user.status !== "gost" && (
+                <form action={odjaviKorisnika}>
+                    <button
+                        type="submit"
+                        className="font-medium hover:underline"
+                    >
+                        Odjavi se
+                    </button>
+                </form>
             )}
         </nav>
     );
