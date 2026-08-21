@@ -27,7 +27,7 @@ export default async function HomePage() {
             <section>
 
                 <h2 className="mb-6 text-2xl font-semibold">
-                    Nekoliko knjiga
+                    Nekoliko knjiga iz baze
                 </h2>
 
                 <div className="flex flex-col gap-6">
